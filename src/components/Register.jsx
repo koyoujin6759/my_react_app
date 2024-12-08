@@ -20,6 +20,13 @@ const Register = () => {
 
   const countRef = useRef(0); // 컴포넌트가 리렌더링 되어도 값이 리셋이되지않음.
   const inputRef = useRef();
+  const [msg, setMsg] = useState(false);
+  const [err, setErr] = useState({
+    name: false,
+    birth: false,
+    country: false,
+    bio: false,
+  });
 
   const onChange = (e) => {
     countRef.current++;
@@ -29,10 +36,42 @@ const Register = () => {
     });
   };
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
     if (input.name === "") {
-      console.log(inputRef.current);
       inputRef.current.focus();
+      setErr({
+        ...err,
+        name: true,
+      });
+    } else if (input.birth === "") {
+      inputRef.current.focus();
+      setErr({
+        ...err,
+        name: false,
+        birth: true,
+      });
+    } else if (input.country === "") {
+      setErr({
+        ...err,
+        name: false,
+        birth: false,
+        country: true,
+      });
+    } else if (input.bio === "") {
+      setErr({
+        name: false,
+        birth: false,
+        country: false,
+        bio: true,
+      });
+    } else {
+      setErr({
+        name: false,
+        birth: false,
+        country: false,
+        bio: false,
+      });
+      setMsg(!msg);
     }
   };
 
@@ -79,7 +118,13 @@ const Register = () => {
         <input ref={inputRef} name="name" value={input.name} onChange={onChange} placeholder={"이름"}></input>
       </div>
       <div>
+        <span style={{ fontSize: 12, color: "red", display: err.name ? "block" : "none" }}>이름을 입력하세요</span>
+      </div>
+      <div>
         <input name="birth" value={input.birth} onChange={onChange} type="date" />
+      </div>
+      <div>
+        <span style={{ fontSize: 12, color: "red", display: err.birth ? "block" : "none" }}>생년월일을 입력하세요</span>
       </div>
       <div>
         <select name="country" value={input.country} onChange={onChange}>
@@ -89,12 +134,18 @@ const Register = () => {
         </select>
       </div>
       <div>
+        <span style={{ fontSize: 12, color: "red", display: err.country ? "block" : "none" }}>국적을 선택하세요</span>
+      </div>
+      <div>
         <textarea name="bio" value={input.bio} onChange={onChange}></textarea>
       </div>
+      <div>
+        <span style={{ fontSize: 12, color: "red", display: err.bio ? "block" : "none" }}>자기소개를 입력하세요</span>
+      </div>
       <button onClick={onSubmit}>제출</button>
-      <div style={{ display: input.name === "" ? "none" : "block" }}>{input.name}님, 가입을 환영합니다.</div>
+
+      <div style={{ display: msg === true ? "block" : "none" }}>{input.name}님, 가입을 환영합니다.</div>
     </div>
   );
 };
-
 export default Register;
